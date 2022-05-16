@@ -621,6 +621,18 @@ test.describe.parallel('Shadowed pages', () => {
 			expect(requests).not.toContain(`${baseURL}/shadowed/missing-get`);
 		}
 	});
+
+	test('Tolerate partially invalid Accept headers', async ({
+		request
+	}) => {
+		const response = await request.get('/shadowed/simple', {
+			headers: {
+				accept: 'text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2'
+			}
+		});
+		expect(response.status()).toEqual(200);
+		expect(response.headers()['content-type']).toEqual('text/html');
+	});
 });
 
 test.describe.parallel('Endpoints', () => {
